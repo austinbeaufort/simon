@@ -6,7 +6,8 @@ body {
 
 .scores {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto auto auto;
+    margin-bottom: 20px;
 }
 
 .game-pad {

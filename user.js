@@ -20,6 +20,13 @@ class User {
                 return;
         }
     }
+
+    resetValues()
+    {
+        this.pattern = [];
+        this.counter = 0;
+        this.turn = false;
+    }
 }
 
 const user = new User();

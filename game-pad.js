@@ -3,7 +3,7 @@
 import { empty, freeze, last, not, randomChoice } from 'ez-read';
 import gamePadDisplay from './game-pad-display';
 import user from './user';
-import runNextPattern from './run-next-pattern';
+import scores from './score-display';
 
 const colors = freeze(['green', 'red', 'blue', 'yellow']);
 
@@ -32,10 +32,15 @@ class GamePad
     }
 
 
+    resetPattern()
+    {
+        this.pattern = [];
+    }
+
+
     async blinkSequence()
     {
         const intervalId = setInterval(() => {
-            console.log(this.colorsToBlink)
             const color = this.colorsToBlink.splice(0, 1);
             blink(color)
             if (empty(this.colorsToBlink))
@@ -48,6 +53,11 @@ class GamePad
 }
 
 
+function isValid(color)
+{
+    const isColor = color === 'green' || color === 'red' || color === 'blue' || color === 'yellow';
+    return isColor;
+}
 
 
 function highlightPad(event)
@@ -57,8 +67,12 @@ function highlightPad(event)
         return;
     }
     const color = event.target.id;
-    const pad = document.querySelector(`#${color}`);
-    pad.classList.add(`blink-${color}`);
+    
+    if (isValid(color))
+    {
+        const pad = document.querySelector(`#${color}`);
+        pad.classList.add(`blink-${color}`);
+    }
 }
 
 
@@ -69,8 +83,11 @@ function removeHighlight(event)
         return;
     }
     const color = event.target.id;
-    const pad = document.querySelector(`#${color}`);
-    pad.classList.remove(`blink-${color}`);
+    if (isValid(color))
+    {
+        const pad = document.querySelector(`#${color}`);
+        pad.classList.remove(`blink-${color}`);
+    }
 }
 
 
@@ -81,21 +98,32 @@ function checkPads(event)
         return;
     }
     const color = event.target.id;
-    console.log('hi')
 
-    if (color !== gamePad.pattern[user.counter])
+    if (isValid(color) && color !== gamePad.pattern[user.counter])
     {
-        console.log('game over');
-        user.turn = false;
+        if ( scores.currentScore > scores.bestScore)
+        {
+            scores.bestScore = scores.currentScore;
+            scores.bestScoreDisplay.innerHTML = `Best Score: ${scores.bestScore}`;
+        }
+        user.resetValues()
+        scores.currentScoreDisplay.innerHTML = `Your Score: ${user.counter}`;
+        scores.message.innerHTML = 'Game Over';
     }
-    else if (color === gamePad.pattern[user.counter] && user.counter < gamePad.pattern.length - 1)
+    else if (isValid(color) && color === gamePad.pattern[user.counter] && user.counter < gamePad.pattern.length - 1)
     {
-        console.log('correct');
         user.counter++;
+    }
+    else if (not(isValid(color)))
+    {
+        return;
     }
     else
     {
         user.turn = false;
+        user.counter++;
+        scores.currentScore = user.counter;
+        scores.currentScoreDisplay.innerHTML = `Your Score: ${user.counter}`;
         user.counter = 0;
         gamePad.addNewColor()
         gamePad.setColorsToBlink()
