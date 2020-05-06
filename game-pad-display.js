@@ -5,12 +5,12 @@ class GamePadDisplay
 {
     constructor()
     {
-        this.container = document.querySelector('.game-pad'),
-        this.green = document.querySelector('#green'),
-        this.red = document.querySelector('#red'),
-        this.blue = document.querySelector('#blue'),
-        this.yellow = document.querySelector('#yellow')
-        this.buttons = freeze([this.green, this.red, this.blue, this.yellow]);
+        this.container = document.querySelector('.game-pad');
+        // this.green = document.querySelector('#green'),
+        // this.red = document.querySelector('#red'),
+        // this.blue = document.querySelector('#blue'),
+        // this.yellow = document.querySelector('#yellow')
+        // this.buttons = freeze([this.green, this.red, this.blue, this.yellow]);
     }
 
 

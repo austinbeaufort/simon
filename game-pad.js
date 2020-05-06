@@ -4,6 +4,7 @@ import { empty, freeze, last, not, randomChoice } from 'ez-read';
 import gamePadDisplay from './game-pad-display';
 import user from './user';
 import scores from './score-display';
+import runNextPattern from './run-next-pattern';
 import { greenSound, redSound, blueSound, yellowSound, endSound } from './sounds';
 const colors = freeze(['green', 'red', 'blue', 'yellow']);
 
@@ -99,40 +100,74 @@ function checkPads(event)
     }
     const color = event.target.id;
 
-    if (isValid(color) && color !== gamePad.pattern[user.counter])
+    switch(true)
     {
-        endSound.play()
-        if ( scores.currentScore > scores.bestScore)
-        {
-            scores.bestScore = scores.currentScore;
-            scores.bestScoreDisplay.innerHTML = `Best Score: ${scores.bestScore}`;
-        }
-        user.resetValues()
-        scores.currentScoreDisplay.innerHTML = `Your Score: ${user.counter}`;
-        scores.message.innerHTML = 'Game Over';
-    }
-    else if (isValid(color) && color === gamePad.pattern[user.counter] && user.counter < gamePad.pattern.length - 1)
-    {
-        playSound(color);
-        user.counter++;
-    }
-    else if (not(isValid(color)))
-    {
-        return;
-    }
-    else
-    {
-        playSound(color);
-        user.turn = false;
-        user.counter++;
-        scores.currentScore = user.counter;
-        scores.currentScoreDisplay.innerHTML = `Your Score: ${user.counter}`;
-        user.counter = 0;
-        gamePad.addNewColor()
-        gamePad.setColorsToBlink()
-        gamePad.blinkSequence()
+        case (isWrongChoice(color)):
+            endGameSequence()
+            break;
+        case (correctChoice(color)):
+            playSound(color);
+            user.counter++;
+            break;
+        case (notGameButton(color)):
+            return;
+        default:
+            computersTurn(color);
     }
 }
+
+
+function notGameButton(color)
+{
+    return not(isValid(color))
+}
+
+
+function correctChoice(color)
+{
+    return isValid(color) 
+        && color === gamePad.pattern[user.counter] 
+        && user.counter < gamePad.pattern.length - 1;
+}
+
+
+function isWrongChoice(color)
+{
+    return isValid(color) && color !== gamePad.pattern[user.counter];
+}
+
+
+function computersTurn(color)
+{
+    playSound(color);
+    user.turn = false;
+    user.counter++;
+    scores.currentScore = user.counter;
+    scores.currentScoreDisplay.innerHTML = `Your Score: ${user.counter}`;
+    user.counter = 0;
+    runNextPattern()
+}
+
+
+function endGameSequence()
+{
+    endSound.play()
+    const newBestScore = scores.currentScore > scores.bestScore;
+    if (newBestScore)
+    {
+        displayNewBestScore()
+    }
+    user.resetValues()
+    scores.currentScoreDisplay.innerHTML = `Your Score: ${user.counter}`;
+    scores.message.innerHTML = 'Game Over';
+}
+
+function displayNewBestScore()
+{
+    scores.bestScore = scores.currentScore;
+    scores.bestScoreDisplay.innerHTML = `Best Score: ${scores.bestScore}`;
+}
+
 
 
 function playSound(color)
