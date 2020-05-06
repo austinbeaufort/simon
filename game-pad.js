@@ -4,7 +4,7 @@ import { empty, freeze, last, not, randomChoice } from 'ez-read';
 import gamePadDisplay from './game-pad-display';
 import user from './user';
 import scores from './score-display';
-
+import { greenSound, redSound, blueSound, yellowSound, endSound } from './sounds';
 const colors = freeze(['green', 'red', 'blue', 'yellow']);
 
 
@@ -101,6 +101,7 @@ function checkPads(event)
 
     if (isValid(color) && color !== gamePad.pattern[user.counter])
     {
+        endSound.play()
         if ( scores.currentScore > scores.bestScore)
         {
             scores.bestScore = scores.currentScore;
@@ -112,6 +113,7 @@ function checkPads(event)
     }
     else if (isValid(color) && color === gamePad.pattern[user.counter] && user.counter < gamePad.pattern.length - 1)
     {
+        playSound(color);
         user.counter++;
     }
     else if (not(isValid(color)))
@@ -120,6 +122,7 @@ function checkPads(event)
     }
     else
     {
+        playSound(color);
         user.turn = false;
         user.counter++;
         scores.currentScore = user.counter;
@@ -132,8 +135,29 @@ function checkPads(event)
 }
 
 
+function playSound(color)
+{
+    switch(color)
+    {
+        case 'green':
+            greenSound.play()
+            break;
+        case 'red':
+            redSound.play()
+            break;
+        case 'blue':
+            blueSound.play()
+            break;
+        case 'yellow':
+            yellowSound.play()
+            break;
+    }
+}
+
+
 function blink(color)
 {
+    playSound(color[0]);
     const pad = document.querySelector(`#${color}`);
     pad.classList.add(`blink-${color}`);
     setTimeout(() => 
