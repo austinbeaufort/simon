@@ -1,6 +1,6 @@
 'use strict'
 
-import { empty, freeze, last, not, randomChoice } from 'ez-read';
+import { empty, freeze, not, randomChoice } from 'ez-read';
 import user from './user';
 import scores from './score-display';
 import runNextPattern from './run-next-pattern';
