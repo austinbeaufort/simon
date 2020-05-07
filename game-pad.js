@@ -1,17 +1,17 @@
 'use strict'
 
 import { empty, freeze, last, not, randomChoice } from 'ez-read';
-import gamePadDisplay from './game-pad-display';
 import user from './user';
 import scores from './score-display';
 import runNextPattern from './run-next-pattern';
 import { greenSound, redSound, blueSound, yellowSound, endSound } from './sounds';
+
 const colors = freeze(['green', 'red', 'blue', 'yellow']);
+const gamePadDisplay = document.querySelector('.game-pad');
 
-
-gamePadDisplay.container.addEventListener('click', checkPads);
-gamePadDisplay.container.addEventListener('mousedown', highlightPad);
-gamePadDisplay.container.addEventListener('mouseup', removeHighlight);
+gamePadDisplay.addEventListener('click', checkPads);
+gamePadDisplay.addEventListener('mousedown', highlightPad);
+gamePadDisplay.addEventListener('mouseup', removeHighlight);
 
 class GamePad 
 {
