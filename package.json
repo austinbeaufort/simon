@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "predeploy": "del -f dist && parcel build index.html --public-url /simon",
-    "deploy": "gh-pages -d dist"
+    "predeploy": "parcel build index.html --out-dir prod --public-url /simon",
+    "deploy": "gh-pages -d prod"
   },
   "keywords": [],
   "author": "",
